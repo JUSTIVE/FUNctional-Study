@@ -1,5 +1,5 @@
 # 타입 vs 클래스
-[https://stackoverflow.com/a/5034071]
+[reference](https://stackoverflow.com/a/5034071)
 >정적 타입은 정적으로 증명될 수 있는 프로그램의 일부의 속성입니다.  
 >정적이라는 것은 실제 실행하지 않고도 증명됨을 의미합니다.  
 
@@ -18,7 +18,7 @@
 
 타입은 타입 인자를 통해 추상화될 수 있습니다. def `foo[T](x:T)=...` 를 작성할 때, foo의 몸체에 있는 T는 타입이고, 클래스가 아닙니다.
 
-[https://stackoverflow.com/a/39665334]
+[reference](https://stackoverflow.com/a/39665334)
 
 GoF에 따르면
 >객체의 __클래스__ 는 객체가 어떻게 정의되어있는지를 정의합니다.  
@@ -26,4 +26,4 @@ GoF에 따르면
 
 >이에 반해 __타입__ 은 응답할 수 있는 요청의 집합인 인터페이스만을 참조합니다.
 
-[http://www.cs.cmu.edu/afs/cs/user/clamen/OODBMS/Manifesto/htManifesto/node6.html]
+[reference](http://www.cs.cmu.edu/afs/cs/user/clamen/OODBMS/Manifesto/htManifesto/node6.html)
