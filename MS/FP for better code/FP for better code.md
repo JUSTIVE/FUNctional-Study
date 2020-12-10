@@ -14,7 +14,9 @@
 - 부작용이 없는 함수
 
 ### 부작용
+
 모든 부작용은 상태와 관련이 있음
+
 - 상태에 영향을 받거나 변화를 주는 모든 동작
 - 화면 출력
 - 소켓 통신
@@ -23,11 +25,12 @@
 - 현재 시간 읽기
 - 난수
 
->그렇다면 왜 이렇게까지 상태를 없애고, 부작용을 없애려 하나?  
->➡`참조 투명성 Referential Transparency`를 얻기 위해서
+> 그렇다면 왜 이렇게까지 상태를 없애고, 부작용을 없애려 하나?  
+> ➡`참조 투명성 Referential Transparency`를 얻기 위해서
 
 ### 참조 투명성
-어떤 함수 `f(x)` 에 대해 `x=1` 일때 `f(x) = 2` 임이 보장되면 프로그램 내의 모든 `f(1)`을 `2`로 교체할 수 있음  
+
+어떤 함수 `f(x)` 에 대해 `x=1` 일때 `f(x) = 2` 임이 보장되면 프로그램 내의 모든 `f(1)`을 `2`로 교체할 수 있음
 
 컴파일러가 프로그램을 최적화 할 여지가 생김
 
@@ -37,28 +40,87 @@
 #### 지연 연산 lazy evaulation
 
 <table>
-    <tr>
-        <td>지연 연산 여부</td>
-        <td>Scala</td>
-    </tr>
-    <tr>
-        <td>❌</td>
-        <td>
-        <pre lang="scala">
-val data = List(1,2,3,4,5)
-val output = data.map(l=>l*2)//이 시점에서 계산됨
-println(output)
-        </pre>
-        </td>
-    </tr>
-    <tr>
-        <td>⭕</td>
-        <td>
-        <pre lang="scala">
-val data = List(1,2,3,4,5)
-lazy val output = data.map(l=>l*2)
-println(output)//이 시점에서 계산됨
-        </pre>
-        </td>
-    </tr>
+  <tr>
+    <td>언어</td>
+    <td>지연 연산 여부</td>
+    <td>코드</td>
+    <td>비고</td>
+  </tr>
+  <tr>
+    <td rowspan=2>Scala</td>
+    <td>❌</td>
+    <td>
+    <pre lang="scala">
+object main {
+  def main(args:Array[String]):Unit ={
+    val x = List(1,2,3,4,5)
+    val y = x.map(l=>l*2)//이 시점에서 계산됨
+    println(y)
+  }
+}
+    </pre>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>⭕</td>
+    <td>
+    <pre lang="scala">
+object main {
+  def main(args:Array[String]):Unit ={
+    val x = List(1,2,3,4,5)
+    lazy val y = x.map(l=>l*2)
+    println(y)//이 시점에서 계산됨
+  }
+}
+    </pre>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td rowspan=2>F#</td>
+    <td>❌</td>
+    <td>
+    <pre lang="fsharp">
+open System
+[&ltEntryPoint&gt]
+let main argv = 
+  let x = [1;2;3;4;5]
+  let y = x |> List.map(fun l -> l*2)//이 시점에서 계산됨
+  printfn "%A" y.Force
+  0
+    </pre>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>⭕</td>
+    <td>
+    <pre lang="fsharp">
+open System
+[&ltEntryPoint&gt]
+let main argv = 
+  let x = [1;2;3;4;5]
+  let y = lazy(x |> List.map(fun l -> l*2))
+  printfn "%A" y.Force//이 시점에서 계산됨
+  0
+    </pre>
+    </td>
+    <td></td>
+  </tr>
 </table>
+
+##### Scala 에서의 지연 연산 처리
+scala 에서는 매우 강력한 지연 연산이 수행되는 것으로 확인됨
+```scala
+object main {
+  def main(args:Array[String]):Unit ={
+    val x = {//lazy 키워드에 상관 없이
+      println("print")
+      234234
+    }
+    val w = x//이 시점에서 계산됨
+    val w2 = x//이 값은 아예 계산이 되지 않음
+  }
+}
+```
