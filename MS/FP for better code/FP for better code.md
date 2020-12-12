@@ -102,8 +102,18 @@ open System
 let main argv = 
   let x = [1;2;3;4;5]
   let y = lazy(x |> List.map(fun l -> l*2))
-  printfn "%A" y.Force//이 시점에서 계산됨
+  printfn "%A" (y.Force())//이 시점에서 계산됨
   0
+    </pre>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td >Rust</td>
+    <td>❓</td>
+    <td>
+    <pre lang="rust">
+언어 스펙상에는 Iterator 계열에만 적용, `rust-lazy` 나 `Trunk` 같은 외부 라이브러리를 통해 함수의 lazy evaluation 구현 가능
     </pre>
     </td>
     <td></td>
@@ -124,3 +134,39 @@ object main {
   }
 }
 ```
+
+### FP 실천사항 1 - 순수함수
+- 코드에서 가능한 순수 함수의 비율이 높아지도록 하자
+  - 전역 변수나 멤버 변수의 의존도를 낮추기
+  - 상태를 없애거나 줄이고 부작용 격리
+- 함수는 주어진 인자만 처리하는 형태로
+  - 레퍼런스 인자를 받는 것을 지양하고 값을 리턴하는 형태로
+  - 한번에 여러 값을 반환할 때는 tuple 타입 사용
+
+## 불변성 Immutability
+새로운 객체를 생성할 때만 값을 바꿀 수 있음  
+ex) Java String
+```java
+String str = "Codemind 2020";
+str.replace("2020","2021")
+System.out.println(str);
+```
+위의 예제의 경우 `str.replace` 함수는 원본 객체를 건드리지 않고, 변경된 새 객체를 반환하므로 변경된 값이 출력되지 않음. 아래의 예제는 변경된 값을 출력하는 예시
+
+```java
+String str = "Codemind 2020";
+String newStr = str.replace("2020","2021")
+System.out.println(newStr);
+```
+
+### 불변객체의 특징
+- 내용의 변경은 새로운 객체를 생성할 때만 가능
+- 생성, 테스트, 사용법이 단순하고 쉬움
+  - 생성자만 보면 이 객체를 알 수 있음
+- Thread-safe
+  - Read only 이기 때문에 race condition 발생이 없다
+- 쉬운 캐싱 : 같은 이름이면 내용도 같음
+- Temporal Coupling 이 적음
+- Identity Mutability Problem이 없음
+
+#### Temporal Coupling
