@@ -201,7 +201,7 @@ System.out.println(newStr);
 >`A[T]` 의 각 요소 e에 대해 인자로 받은 함수 `f(e)`가 참인 요소만 반환
 
 ### 함수의 합성 function composition
-[링크](../The Power of Composition/The Power of Composition.md)
+[레퍼런스 링크](../The Power of Composition/The Power of Composition.md)
 
 
 
@@ -210,4 +210,92 @@ System.out.println(newStr);
 >   - 적은 코드에서는 버그찾기가 쉬움 (사막에서 바늘찾기 VS 방에서 책찾기)
 >- 알고리즘의 구현부와 사용부분을 분리하기
 >   - 로직 구현에서는 실제 관련 없는 임시변수와 상태를 없앰
->- 함수를 합성 가능하게 해서 
+>- 함수를 합성 가능하게 해서 재활용성을 높이자
+>   - 검증된 함수들을 조립해서 안전한 프로그래밍과 빠른 코딩을!
+>- 지연연산을 이용한 최적화를 시도하자
+>   - 무한리스트에 대해 알아보기(GUI에서의 infinite list가 아니라;)
+>        - [레퍼런스 링크](https://kwangyulseo.com/2016/10/19/%ED%95%98%EC%8A%A4%EC%BC%88-%EB%AC%B4%ED%95%9C-%EB%A6%AC%EC%8A%A4%ED%8A%B8/)
+
+## 타입 시스템의 활용
+
+### 타입의 활용
+ - 메모리상에 저장된 데이터가 쓰일 방법을 정의
+ - 가능한 빠른 단계에서 오류 발견
+ - 코드의 함축성 증가
+ - 로직 설계의 도구
+ - 지원하지 않는 동작은 문법상에서 구현할 수 없음
+ - 합성을 위한 접착제
+
+#### Optional 타입 예제
+Optional type은 `billion dollar mistake` 인 null을 피하기 위한(null-safe 한)동작을 가능하게 하는 `타입`
+```fsharp
+type Option<'a> =
+  | Some of 'a
+  | None
+```
+
+
+
+### 대수적 자료형 Algebraic Data Types(ADT : abstract data type 아님 ㅎㅎ)
+
+- Product types(*) : pair, typle, struct/class
+- Sum types(+) : optional, variant, etc
+
+유효한 상태의 개수보다 데이터 타입의 Cardinality(표현될 수 있는 경우의 수)가 크다면 버그를 유발할 수 있음
+
+```fsharp
+type AppleVariety = Red | Green
+type BananaVariety = Yellow | Brown
+type CherryVariety = Tart | Sweet
+
+type FruitSalad = {
+  Apple: AppleVariety
+  Banana: BananaVariety
+  Cherry: CherryVariety
+}
+
+type SaladVariety = FruitSalad | ChickenBrestSalad
+
+type Breakfast = {
+  salad: SaladVariety
+  ...
+}
+```
+```fsharp
+type Suit = 
+  | Club 
+  | Diamond 
+  | Space 
+  | Heart
+type Rank = 
+  | Ace   | Two   | Three 
+  | Four  | Five  | Six 
+  | Seven | Eight | Nine 
+  | Ten   | Jack  | Queen | King
+
+type Card = {
+  Suit: Suit
+  Rank: Rank
+}
+
+type Hand = list<Card>
+type Deck = list<Card>
+
+type Player = {
+  Name : string,
+  Hand : Hand
+}
+
+type Game = {
+  Deck: Deck
+  Players: list<Player>
+}
+
+type Deal = Deck -> (Deck * Card)
+
+type PickupCard = (Hand * Card) -> Hand
+```
+
+하나의 화면 안에 도메인을 모두 담을 수 있다(조금 비약적임)
+
+이런 방식의 설계를 `Domain Driven Design` 이라고 함
