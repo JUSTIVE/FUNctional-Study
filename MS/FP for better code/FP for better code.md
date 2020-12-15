@@ -199,3 +199,15 @@ System.out.println(newStr);
 >`A[T]`에 대해 `f(f(f(A[0]),f([1])),f[2])...` 를 적용하는 함수
 - filter,remove_if,copy_if
 >`A[T]` 의 각 요소 e에 대해 인자로 받은 함수 `f(e)`가 참인 요소만 반환
+
+### 함수의 합성 function composition
+[링크](../The Power of Composition/The Power of Composition.md)
+
+
+
+>### FP 실천사항 3 - 고차함수와 합성
+>- 고차함수를 사용해서 코드를 간결하게 만들기
+>   - 적은 코드에서는 버그찾기가 쉬움 (사막에서 바늘찾기 VS 방에서 책찾기)
+>- 알고리즘의 구현부와 사용부분을 분리하기
+>   - 로직 구현에서는 실제 관련 없는 임시변수와 상태를 없앰
+>- 함수를 합성 가능하게 해서 
