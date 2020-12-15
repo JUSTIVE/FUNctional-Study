@@ -100,6 +100,8 @@ if __name__=='__main__':
     Main()
 ```
 
+---
+
 ***Reference***
 
 [더 좋은 코드를 위한 함수형 프로그래밍](http://ndcreplay.nexon.com/NDC2017/sessions/NDC2017_0025.html)
