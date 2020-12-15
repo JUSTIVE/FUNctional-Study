@@ -45,3 +45,75 @@ implicit class AnyEx[+A, -B](f: B=>A) {
     def |>:[C](g: C => B): C => A = (c: C) => f(g(c))
 }
 ```
+
+함수 합성을 위한 파이프 연산자를 지원하는 언어 목록
+- f#, OCaml
+- Elm
+- Elixir
+- Scala(위에 있는 저거로 가능)
+- Javascript(stage 1: experimental feature)
+- R
+- Haskell
+- Python(Coconut, Toolz와 같은 패키지를 통해 지원)
+- C#(.Pipe method extension을 통해 사용 가능)
+
+## 타입은 클래스가 아니다
+
+클래스는 상태`field`와 동작`method`를 포함하고 있으며, 엄밀히 말하면 타입은 여기서의 상태만을 취하는 것.(물론 변하지 않는 값이기에 상태보다는 상수형 값에 가깝다)
+
+함수는 타입 외부에, 같은/다른 모듈`module` 안에서 관리된다
+
+
+## 다른 개수의 인자를 받는 함수간의 합성
+
+모든 함수들이 `input -> function A -> output` 형태로 되어있다면 이상적이나,  
+`input1, input2 -> function B -> output` 인 경우도 있다
+
+>함수 합성 패턴은 하나의 인자를 받을 때만 사용할 수 있다!!  
+>그렇다면 모든 함수를 하나의 인자만 받는 함수로 바꾸자!  
+### 커링을 이용한 합성
+
+함수형 프로그래밍에서 커링`currying`이란  
+`input1, input2 -> function B -> output` 형태의 B에 대해서
+
+`input1 -> curried function -> (input2 -> intermediate function -> output)`
+의 형태로 바꾸는 것
+<img src="./img/currying.png" style="width:500px">
+
+위의 그림에서 curried function의 반환타입은 `input2를 입력받아 output을 반환하는 함수` 이다  
+
+```fsharp
+    let add x y = x + y 
+    let multiply x y = x * y
+    [<EntryPoint>]
+    let main argv = 
+        5
+        |> add 2
+        |> multiply 3
+        |> printfn "%d"
+        0
+```
+fsharp은 기본적으로 일반 함수들을 커링된 형태로 변환함  
+위의 `add` function의 시그니쳐 자체가 `int -> int -> int` 로 정의됨
+```scala
+object main {
+  implicit class AnyEx[T](val v: T) extends AnyVal {
+    def |>[U](f: T ⇒ U): U = f(v)
+  }
+  def main(args:Array[String]):Unit ={
+    def add_currying(x:Int) =(y:Int)=> x+y
+    def multiply_currying(x:Int) = (y:Int)=> x*y
+    val res = 5|>
+              add_currying(2)|>
+              multiply_currying(3)
+
+    // 혹은 multiply_currying(3)(add_currying(2)(5))
+    println(res)
+    //스칼라에서는 파라미터22개까지의 함수만 커링을 지원
+  }
+}
+```
+
+이 `currying`이란 이름은 `Haskell B. Currying`이란 수학자의 이름에서 나온 것
+
+### 다른 개수의 반환값을 가지는 함수간의 합성
