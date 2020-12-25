@@ -120,8 +120,8 @@ let main argv =
   </tr>
 </table>
 
-##### Scala 에서의 지연 연산 처리
-scala 에서는 매우 강력한 지연 연산이 수행되는 것으로 확인됨
+##### Scala 에서의 메모이제이션 처리
+scala 에서는 매우 강력한 메모이제이션이 수행되는 것으로 확인됨
 ```scala
 object main {
   def main(args:Array[String]):Unit ={
@@ -129,8 +129,8 @@ object main {
       println("print")
       234234
     }
-    val w = x//이 시점에서 계산됨
-    val w2 = x//이 값은 아예 계산이 되지 않음
+    val w = x//여기서 print가 수행됨
+    val w2 = x//x의 값은 234234 로 평가되기 때문에 print가 수행되지 않음
   }
 }
 ```
