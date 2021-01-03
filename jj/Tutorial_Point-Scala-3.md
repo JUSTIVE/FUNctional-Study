@@ -102,7 +102,7 @@ object T{
   }
 }
 
-```scala
+```
 
 - 꼬리 재귀 : @tailrec 어노테이션을 사용
 
