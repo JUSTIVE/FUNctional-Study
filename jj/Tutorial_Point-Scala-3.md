@@ -2,7 +2,7 @@
 
 - Closures : 반환값이 함수 외부에 선언되어있는 하나 이상의 변수의 값에 의존하는 함수
 
-```
+```scala
 object T{
   def main(args: Array[String]): Unit = {
     val one = 1
@@ -17,7 +17,7 @@ object T{
 
 - 배열 선언 (다차원 배열을 직접 지원하지 않으며, 다른 방법을 사용하려면 Array._ 패키지를 가져와야함.)
 
-```
+```scala
 object T{
   def main(args: Array[String]): Unit = {
     var array = Array(1,2,3,4,5) // 배열 선언
@@ -34,7 +34,7 @@ object T{
 
 ```
 - 다차원 배열 선언
-```
+```scala
 
 object T{
   def main(args: Array[String]): Unit = {
@@ -64,7 +64,7 @@ object T{
 
 - 정규식 : String 문자열을 ".r" 해줌으로써 정규표현식으로 전환 가능
 
-```
+```scala
 
 object T{
   def main(args: Array[String]): Unit = {
@@ -80,7 +80,7 @@ object T{
 
 - 예외 처리 : 패턴 매칭하여 예외처리
 
-```
+```scala
 import java.io.{FileNotFoundException, FileReader}
 import scala.reflect.io.File
 
@@ -102,13 +102,13 @@ object T{
   }
 }
 
-```
+```scala
 
 - 꼬리 재귀 : @tailrec 어노테이션을 사용
 
 - tailrec 사용 하지 않음. 꼬리재귀 형식이 아니기 때문에 @tailrec 사용시 컴파일 에러
 
-```
+```scala
 
 class math{
   def fectorial(num : Int) : Int = {
@@ -124,7 +124,7 @@ object T{
   }
 }
 
-// 콜 스택
+// 콜 스택 
 (fact 5)
 (* 5 (fact 4))
 (* 5 (* 4 (fact 3)))
@@ -138,7 +138,7 @@ object T{
 120
 ```
 - 꼬리 재귀 사용
-```
+```scala
 class math{
   def fectorial(num : Int) : Int = {
     @tailrec

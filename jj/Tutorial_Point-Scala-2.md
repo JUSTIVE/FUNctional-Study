@@ -3,7 +3,7 @@
 - 스칼라와 자바의 가장 큰 구문의 차이 : ";"와 "return"는 선택사항. 리턴은 마지막줄을 리턴. 
 - void 대신 Unit을 사용 
 
-```
+```scala
 class math{
   def plus(one : Int, two : Int): Int ={
     one + two // 리턴
@@ -18,7 +18,7 @@ object T{
 
 - Object - 싱글톤 객체, 정적으로 사용할 값들을 지정할 때 사용.
 
-```
+```scala
 // 정적 객체를 선언. new 연산자로 동적 메모리 할당을 하지않음. "object 로 선언"
 
 object A {
@@ -36,7 +36,7 @@ object T {
 
 - Class - 동적 객체. 메모리를 할당하는 객체라고 생각하면 편함 (?). "class 로 선언"
 
-```
+```scala
 object A {
   def plus(one : Int, two : Int) : Int = one+two
 }
@@ -57,7 +57,7 @@ object T {
 
 - Method - 동작을 구현해놓은 구현체. 클래스 내에서 클래스와 관련된 실질적인 동작을 함. "def로 선언"
 
-```
+```scala
 object T{
   def IMDEF() : Unit = Console.println("Hello Scala")
   def main(args: Array[String]): Unit = {
@@ -70,7 +70,7 @@ object T{
     
     1. val - 상수 (Immutable - 수정 불가. )
     2. var - 변수 (Mutable - 수정 가능)
-```
+```scala
 object T{
   def main(args: Array[String]): Unit = {
     val hello_immutable = "I hate Scala" // String
@@ -85,7 +85,7 @@ object T{
 -Trait : 추상 클래스, 정의만 할 수도 있고, 구현 또한 가능하다. 두개 이상의 trait을 상속받고 싶다면 with를 통해 추상클래스를 믹싱할 수 있다.
 
 
-```
+```scala
 trait student{
   def person(name : String, age : Int)
 }
@@ -101,7 +101,7 @@ class A extends student with teacher{
 - case class - 인스턴스 생성시 new 연산을 통해 생성하지 않음.
 케이스 클래스의 파라미터들은 불변 테이터이고, 각 파라미터는 "."연산자를 통해서 접근 가능.
 
-```
+```scala
 trait Test
 case class A(A : String, B : String) extends Test
 case class B(A : String) extends Test
@@ -139,7 +139,7 @@ a1 != b
 
 - 값들을 패턴 매칭
 
-```
+```scala
 trait Test
 case class A(A : String, B : String) extends Test
 case class B(A : String) extends Test
@@ -166,7 +166,7 @@ a1의 A는 A입니다.
 a1.A = A
 ```
 - 케이스 클래스 매칭
-```
+```scala
 trait Test
 case class A(A : String, B : String) extends Test
 case class B(A : String) extends Test
