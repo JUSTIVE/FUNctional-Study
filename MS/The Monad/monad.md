@@ -250,12 +250,10 @@ eval(y) match {
     case Some x => ❔ x
 ```
 위의 코드에서 ❓는 `Option` 타입이고, ❔는 `f(x:A)=>B` 타입이다  
-따라서 우리가 원하는 그림은 다음과 같다
-
-![monad](img/1.png)
 
 이 때의 시그니쳐는 다음과 같다
 
+![monad](img/2.png)
 ## Thirteen ways of looking at a turtle ~Monad~
 [NDC London 2017-Scott Wlaschin](https://www.youtube.com/watch?v=AG3KuqDbmhM)
 
@@ -308,15 +306,12 @@ type Turtle() =
 
 ### 장점과 단점
 
-장점
-
-- 친숙하다
-  
-단점
-
-- Stateful하고, 블랙박스(결과가 나오는 게 없으니 어떤 동작을 하는 지 가늠하기 어려움)이다
-- 구성(composition)하기 어렵다
-- 하드코딩된 의존성(아직까지는, 이후 의존성 삽입으로 해결 가능)
+|장점|단점|
+|---|---|
+|친숙하다|Stateful하고, 블랙박스(결과가 나오는 게 없으니 어떤 동작을 하는 지 가늠하기 어려움)이다|
+||구성(composition)하기 어렵다|
+||하드코딩된 의존성(아직까지는, 그러나 의존성 삽입으로 해결 가능)|
+ 
 
 ## Functional Turtle
 
@@ -347,16 +342,12 @@ let drawTriangle()=
 
 ### 장점과 단점
 
-장점
+|장점|단점|
+|---|---|
+|불변성: 원인 파악이 쉽다. 블랙박스가 없다|클라이언트는 항상 상태를 추적해야 한다
+|상태가 없다: 테스트 하기 쉽다|하드코딩된 의존성(아직까지는)
+|함수들은 구성이 쉽다||
 
-- 불변성: 원인 파악이 쉽다. 블랙박스가 없다
-- 상태가 없다: 테스트 하기 쉽다
-- 함수들은 구성이 쉽다
-
-단점
-
-- 클라이언트는 항상 상태를 추적해야 한다
-- 하드코딩된 의존성(아직까지는)
 
 ## State monad
 
@@ -426,3 +417,103 @@ let stateExpression = state {
 단점
 
 - 구현하고 사용하기 어렵습니다.
+
+## Error handling
+
+벽에 충돌하는 결과를 상정할 때, Turtle Function은 다음과 같이 정의할 수 있습니다.
+
+> TurtleFunction(input TurtleState) -> (Success or Failure)
+
+반환 값은 두 종류가 아닌 둘 중 하나이므로 이를 `Choice type` 로 표현하면 다음과 같습니다.
+
+```fsharp
+type Result<'successInfo,'errorInfo> =
+    | Success of `successInfo
+    | Failure of `errorInfo
+```
+
+이런 `Choice type`은 `Sum type`,`Descriminated Union type` 등으로 불리기도 합니다.
+
+### Result를 이용한 구현
+
+```fsharp
+let move distanceRequested state =
+    //calculate new position
+    //draw line if needed
+    if actualDistanceMoved <> distanceRequested then
+        Failure "Moved out of bounds"
+    else
+        Success (state with poisition = endPosition)
+```
+
+이러한 다른 두 종류의 선택을 반환하는 것은 객체지향에서 쉽지 않습니다.
+
+사용례
+
+```fsharp
+let s0 = Turtle.initialTurtleState
+let result1 = s0 |> Turtle.move 80.0
+match result1 with
+| Success s1 ->
+    let result2 = s1 |> Turtle.move 80.0
+    match result2 with 
+    | Success s2 ->
+        ...
+    | Failure msg ->
+        printfn "second move failed %s" msg
+| Failure msg ->
+    printfn "second move failed %s" msg
+```
+
+이러한 구조를 반복하는 것은 아름답지 않습니다. 그래서 이를 result 계산식을 이용하여 재정의를 하면 다음과 같습니다.
+
+```fsharp
+let finalResult = result {
+    let s0= Turtle.initialTurtleState
+    let! s1 = s0 |> Turtle.move 80.0
+    printfn "first move succeeded"
+    let! s2 = s1 |> Turtle.move 30.0
+    printfn "second movesucceeded"
+    let! s3 = s2 |> Turtle.turn 120.0<Degrees>
+    let! s4 = s3 |> Turtle.move 80.0
+    printfn "third move succeeded"
+    return()
+}
+```
+위의 코드 중 하나라도 실패하는 것이 있다면, 다른 모든 라인을 무시하고 맨 아래의 라인으로 가게 될 것입니다. 위의 코드에서 상태를 계속 추적하는 것이 보입니다. 이를 상태와 결과를 합쳐서 표현하면 다음과 같습니다.
+
+```fsharp
+let finalResult = resultState{
+    do! Turtle.move 80.0
+    printfn "first move succeeded"
+    do! Turtle.move 30.0
+    printfn "second move succeeded"
+    do! Turtle.turn 120.0<Degrees>
+    do! Turtle.move 80.0
+    printfn "third move succeeded"
+    return ()
+}
+```
+
+이는 객체지향에서의 명령형 코드처럼 보입니다. 그러나 객체지향과는 다르게 상태 관리와 에러 처리가 적용되어 있습니다.
+
+### 장점과 단점
+
+장점
+
+- 에러가 명시적으로 반환됩니다(Exception이 없습니다)
+- 지저분한 에러 처리 코드가 없습니다(try-catch등)
+
+단점
+
+- 구현하고 쓰기가 좀 어렵습니다
+
+### 여담
+
+여기서 사용된 `State monad` 는 많은 곳에서 사용됩니다.
+- 디자인 패턴의 옵저버 패턴
+- ReactiveX  
+![Rx](img/Rx.png)
+- VueX, Redux  
+![redux](img/redux.png)
+- Flutter의 Bloc
