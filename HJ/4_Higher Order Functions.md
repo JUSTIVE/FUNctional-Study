@@ -19,9 +19,9 @@
 - 함수 타입  
 **A => B**의 타입은 함수!! 함수 형태인 A argument 를 입력한 결과를 B 라는 결과로 리턴한다 → Int => Int는 int를 int로 맵핑하는 함수
 
-- 익명함수
+- 익명함수   
 함수 리터럴에 이름을 주지않고 함수를  작성하는 것   
-→ 우리는 **string** 값을 println에 바로 대입할 수 있다 Why? string은 **리터럴(literals)로 존재하기 때문!!   
+→ 우리는 **string** 값을 println에 바로 대입할 수 있다 Why? string은 **리터럴(literals)** 로 존재하기 때문!!   
 유사하게 함수 리터럴도 쓰기를 원하기 때문에 익명 함수가 존재
     ```
     (x: Int, y: Int) => x + y

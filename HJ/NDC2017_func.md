@@ -37,7 +37,7 @@
 
 ## 고차함수
 - 함수의 인자로 한 개 이상의 함수를 넘겨 받거나, 함수의 결과값으로 다른 함수를 돌려주는 함수
-- C++에서는 #include <algorithm> → funtioncal이 가능
+- C++에서는 #include < algorithm > → funtioncal이 가능
 - FP의 기본 초식 3총사   
     ##### 언어는 C++ ( python )
     - std::transform (=map)
