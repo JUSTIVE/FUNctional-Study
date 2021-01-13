@@ -7,11 +7,12 @@
 ## 📜목차
 - [📐수학적 접근으로의 모나드](#📐수학적-접근으로의-모나드)
 - [💻프로그래밍적 관점의 모나드](#💻프로그래밍적-관점의-모나드)
-
+- [Monad by Computerphile](#monad-by-computerphile)
+- [Thirteen ways of looking at a turtle ~Monad~](#thirteen-ways-of-looking-at-a-turtle-monad)
 ---
 ## 📐수학적 접근으로의 모나드
 
-> A Monoid in the Category of Endofunctors
+## A Monoid in the Category of Endofunctors
 
 - [모노이드](#모노이드-monoid-단군)
   - [반군](#semi-group-반군)
@@ -24,20 +25,18 @@
 
 ### 모노이드 monoid 단군
 항등원을 갖는 `semi group`
-
 > Monoid (S,F)에 대하여 a,b,c ∈ S 일때 `F(F(a,b),c)` = `F(a,F(b,c))` 이다  
 > Monoid (S,F)에 대하여 x,i ∈ S 일때 `F(x,i) = x` 를 만족하는 `i` 가 존재한다
 
+>#### semi group 반군
+>결합 법칙을 따르는 이항 연산을 갖춘 `대수 구조` (S,F)  
+>> SemiGroup (S,F)에 대하여 a,b,c ∈ S 일때 `F(F(a,b),c)` = `F(a,F(b,c))` 이다
+>
+>>#### 대수 구조 algebraic structure
+>>일련의 연산들이 주어진 집합
+>>대수 구조의 signature (T,arity) 는 arity:T->N  
 
-
-#### semi group 반군
-결합 법칙을 따르는 이항 연산을 갖춘 `대수 구조` (S,F)  
-> SemiGroup (S,F)에 대하여 a,b,c ∈ S 일때 `F(F(a,b),c)` = `F(a,F(b,c))` 이다
-
-#### 대수 구조 algebraic structure
-일련의 연산들이 주어진 집합
-대수 구조의 signature (T,arity) 는 arity:T->N  
-이때 arity(α) = n 인 α ∈ T 를 `T의 n항 연산`이라 함.
+---
 
 ## A `Monoid` in the Category of Endofunctors
 
@@ -48,14 +47,16 @@
 - 자기 자신으로 가능 항등 사상이 있음
 - 사상은 결합 법칙을 만족함
 
-#### 사상 morphism = 함수
+>#### 사상 morphism = 함수
+
+---
 
 ## A `Monoid` in the `Category` of Endofunctors
 
 ### 함자 functor
 
 
-![talk-is-cheap](img/talkis.png)
+![talk-is-cheap](img/talkis.png)  
 너무 깊다! 그래서 모나드가 뭐냐!
 
 ---
@@ -167,7 +168,7 @@ def sumOfSquaresOfEvenElements(list:List[Int]):Int ={
 
 ---
 
-## Monad by Computerphille
+## Monad by Computerphile
 [reference](https://www.youtube.com/watch?v=t1e8gqXLbsU&ab_channel=Computerphile)
 
 수학의 집합론에서 1960년대에 기원했으며 1990년대 컴퓨터 프로그래밍에서 재발견된 것.
@@ -255,3 +256,173 @@ eval(y) match {
 
 이 때의 시그니쳐는 다음과 같다
 
+## Thirteen ways of looking at a turtle ~Monad~
+[NDC London 2017-Scott Wlaschin](https://www.youtube.com/watch?v=AG3KuqDbmhM)
+
+![Turtle](img/turtle.png)
+
+네모 안에 거북이가 있다고 치고, 이 거북이가 움직이면서 선을 그릴 것입니다. 사용될 API는 다음과 같습니다.
+|API|설명|
+|---|---|
+|Move aDistance| 현재 위치에서 일정 거리를 움직입니다.|
+|Turn anAngle|주어진 각도만큼 시계 혹은 반시계 방향으로 회전합니다|
+|PenUp PenDown|펜을 들거나 내립니다. 펜이 내려가있을 때, 움직이는 거북이는 선을 그립니다.|
+
+## Object Oriented Turtle
+
+데이터와 동작이 묶여있습니다
+
+```fsharp
+type Turtle() =
+    let mutable currentPosition = initialPosition
+    let mutable currentAngle = 0.0<Degrees>
+    let mutable currentPenState = initialPenState
+
+    member this.Move(distance) =
+        Logger.info (sprintf "Move %0.1f" distance)
+        let startPos = currentPosition
+        //calculate new position
+        let endPos = calcNewPosition distance currentAngle startPos
+        //draw line if needed\
+        if currentPenState = Down then
+            Canvas.draw startPos endPos
+        //update the state
+        currentPosition <-endPos
+
+    member this.Turn(angleToTurn) = 
+        Logger.info (sprintf "Turn %0.1f" angleToTurn)
+        //calculate new angle
+        let newAngle = (currentAngle + angleToTurn) % 360.0<Degrees>
+
+        //update the state
+        currentAngle <- newAngle
+
+    member this.PenUp() =
+        Logger.info "Pen Up"
+        currentPenState <- Up
+
+    member this.PenUp() =
+        Logger.info "Pen Down"
+        currentPenState <- Down
+```
+
+### 장점과 단점
+
+장점
+
+- 친숙하다
+  
+단점
+
+- Stateful하고, 블랙박스(결과가 나오는 게 없으니 어떤 동작을 하는 지 가늠하기 어려움)이다
+- 구성(composition)하기 어렵다
+- 하드코딩된 의존성(아직까지는, 이후 의존성 삽입으로 해결 가능)
+
+## Functional Turtle
+
+데이터는 불변적이다
+
+```fsharp
+type TurtleState = {
+    position: Position
+    angle : float<Degrees>
+    penState : PenState
+}
+
+module Turtle =
+    let move distance state = ... //추상 데이터와 다르게 새 state를 반환
+    let turn angleToTurn state = ... //추상 데이터와 다르게 새 state를 반환
+    let penUp state = ... //추상 데이터와 다르게 새 state를 반환
+    let penDown log state = ... //추상 데이터와 다르게 새 state를 반환
+```
+
+사용례
+```fsharp
+let drawTriangle()=
+    Turtle.initialTurtleState
+    |>Turtle.move 50.0
+    |>Turtle.turn 120.0<Degrees>
+    ...
+```
+
+### 장점과 단점
+
+장점
+
+- 불변성: 원인 파악이 쉽다. 블랙박스가 없다
+- 상태가 없다: 테스트 하기 쉽다
+- 함수들은 구성이 쉽다
+
+단점
+
+- 클라이언트는 항상 상태를 추적해야 한다
+- 하드코딩된 의존성(아직까지는)
+
+## State monad
+
+화면 뒤의 스레딩 상태
+
+![turtle1](img/turtle1.png)
+
+만약 거북이가 네모의 가장자리에 닿으면 더 이상 가지 못한다고 하는 상황을 위하여 API를 바꿔보겠습니다.  
+move의 반환값이 `(새 상태*실제 이동한 거리)`
+
+다음은 함수형의 접근으로 새 API를 작성한 것입니다.
+```fsharp
+let s0 = Turtle.initialTurtleState
+let (actualDistA,s1) = Turtle.move 80.0 s0
+if actualDistA < 80.0 then
+    printfn "first move failed -- turning"
+    let s2 = Turtle.turn 120.0<Degrees> s1
+    let (actualDistB,s3) = Turtle.move 80.0 s2
+    ...
+else
+    printfn "first move succeeded"
+    let (acutalDistC,s2) = Turtle.move 80.0 s1
+    ...
+```
+
+위와 같이 분기를 따라 상태를 전달하는 것은 끔찍합니다. 반환값이 단순 상태가 아닌 pair이기 때문에 파이핑 또한 사용할 수 없습니다. 이런 상황이 있을 때 상태를 어떻게 계속 추적할 수 있을까요?
+
+그래서 우리는 Turtle function을 수정해야 합니다.
+
+기존의 Turtle function이  
+
+>TurtleFunction(TurtleState input) -> (newTurtleState * Output)
+
+의 형태였다면, 이를 
+
+>f(input g(TurtleState)) -> (newTurtleState * Output)
+
+의 형태로 `currying`를 합니다. 이를 추상화한다면 
+
+>TurtleFunction(input) -> State<>
+
+로 볼 수 있습니다. 이제 하나의 값을 반환하는 함수가 되었으니, 파이핑을 할 수 있습니다. 이를 사용하기 위해서는 별도의 특별한 `state expression`을 사용해야 합니다.
+
+사용례
+
+```fsharp
+let stateExpression = state {
+    let! distA = move 80.0
+    if distA < 80.0 then
+        printfn "first move failed --turning"
+        do! turn 120.0<Degrees>
+        ...
+    else
+        printfn "first move succeeded"
+        let! distB = move 80.0
+        ...
+}
+```
+
+### 장점과 단점
+
+장점
+
+- 명령형 코드처럼 보이지만 불변성을 보전합니다.
+- 함수들이 여전히 구성 가능합니다
+
+단점
+
+- 구현하고 사용하기 어렵습니다.
