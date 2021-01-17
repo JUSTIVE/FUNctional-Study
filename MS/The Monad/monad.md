@@ -1,5 +1,7 @@
 # 모나드 Monad
 
+## TL;DR
+> `자기 자신의 타입을 반환 타입으로 가지는 메소드`를 가지는 `제네릭 타입`
 
 
 ⚠이하 본문은 `제네릭 프로그래밍`, `대수적 자료형`, `패턴 매칭` 을 알고 있음을 전제 하에 기술되었습니다.
@@ -12,7 +14,7 @@
 ---
 ## 📐수학적 접근으로의 모나드
 
-## A Monoid in the Category of Endofunctors
+## `A` Monoid `in the` Category `of` Endofunctors
 
 - [모노이드](#모노이드-monoid-단군)
   - [반군](#semi-group-반군)
@@ -38,11 +40,12 @@
 
 ---
 
-## A `Monoid` in the Category of Endofunctors
+## `A Monoid in the` Category `of` Endofunctors
 
 ### 카테고리 Category 범주
 - 대상의 모음
-- 카테고리 S에 대하여 a,b ∈ S 인 대상 a,b에 a를 정의역으로, b를 공역으로 하는 사상이 존재
+- 카테고리 S에 대하여 a,b ∈ S 인 대상 a,b에 a를 정의역으로, b를 공역으로 하는 사상이 존재 
+  - ❗이때의 a,b는 구체적 값이 아닌 하위 카테고리임을 주의
 - 사상은 합성이 가능
 - 자기 자신으로 가능 항등 사상이 있음
 - 사상은 결합 법칙을 만족함
@@ -51,9 +54,21 @@
 
 ---
 
-## A `Monoid` in the `Category` of Endofunctors
+## `A Monoid in the Category of` Endofunctors
 
 ### 함자 functor
+범주론에서, 두 범주 사이의 함수에 해당하는 구조.
+
+범주 C,D에 대하여 C와 D 사이의 함자는 F:C → D 로 표기
+- C의 임의의 대상 X에 대해 대응되는 D의 사상 `F(X)`
+- C의 임의의 사상 f:X→Y에 대해 대응되는 D의 사상 F(f):F(X)→F(Y)
+
+#### 자기 함자 endofunctor
+정의역과 공역이 같은 범주인 함자를 의미  
+`F:C→C`
+
+## `A Monoid in the Category of Endofunctors`
+- 정의역과 공역이 같은 사상의 집합 속의 결합 법칙을 따르는 이항 연산을 가진 대수 구조
 
 
 ![talk-is-cheap](img/talkis.png)  
@@ -513,7 +528,7 @@ let finalResult = resultState{
 여기서 사용된 `State monad` 는 많은 곳에서 사용됩니다.
 - 디자인 패턴의 옵저버 패턴
 - ReactiveX  
-![Rx](img/Rx.png)
+![Rx](img/RX.png)
 - VueX, Redux  
 ![redux](img/redux.png)
 - Flutter의 Bloc
